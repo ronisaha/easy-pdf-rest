@@ -1,5 +1,5 @@
 <div align="center">
-	<p style="background-color: #FFFFFF">
+	<p>
 		<a href="https://github.com/ronisaha/easy-pdf-rest#is=awesome">
 			<img width="90%" src="https://raw.githubusercontent.com/ronisaha/easy-pdf-rest/develop/resources/logo.svg?sanitize=true"/>
 		</a>
