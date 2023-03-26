@@ -1,7 +1,7 @@
 <div align="center">
 	<p>
-		<a href="https://github.com/xpublisher/weasyprint-rest#is=awesome">
-			<img width="90%" src="https://raw.githubusercontent.com/xpublisher/weasyprint-rest/main/resources/logo_background.svg?sanitize=true"/>
+		<a href="https://github.com/ronisaha/easy-pdf-rest#is=awesome">
+			<img width="90%" src="https://raw.githubusercontent.com/ronisaha/easy-pdf-rest/develop/resources/logo_background.svg?sanitize=true"/>
 		</a>
 	</p>
 	<hr>
@@ -15,7 +15,7 @@
 First, you can start the container using the following command:
 
 ```bash
-docker run -p 5000:5000 -v /path/to/local/templates:/data/templates -d ronisaha/weasyprint-rest:latest
+docker run -p 5000:5000 -v /path/to/local/templates:/data/templates -d ronisaha/easy-pdf-rest:latest
 ```
 
 Then you can use the following command to generate the report.pdf from the official WeasyPrint sample. You can find the files in `tests/resources/report`.

@@ -1,0 +1,27 @@
+name: Publish to docker
+
+on: [push]
+
+jobs:
+  push:
+    if: github.event_name == 'push' && (contains(github.ref, 'refs/tags/') || contains(github.ref, 'refs/heads/develop'))
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Docker Login (docker.io)
+      uses: azure/docker-login@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: Build and Push docker images
+      run: |
+        WEASYPRINT_VERSION=58.1
+        IMAGE_ID=${{ secrets.DOCKERHUB_USERNAME }}/easy-pdf-rest
+        tmpName="image-$RANDOM"
+        docker build --tag $tmpName .
+        docker tag $tmpName $IMAGE_ID:$WEASYPRINT_VERSION
+        docker tag $tmpName $IMAGE_ID:latest
+        docker push $IMAGE_ID:$WEASYPRINT_VERSION
+        docker push $IMAGE_ID:latest
