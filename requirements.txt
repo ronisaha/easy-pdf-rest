@@ -8,3 +8,4 @@ Flask-CORS==3.0.10
 WeasyPrint==58.1
 Werkzeug==2.2.3
 waitress==2.1.2
+pypdf==3.6.0

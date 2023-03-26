@@ -9,10 +9,19 @@ import logging
 
 from flask import abort, request
 from functools import wraps
+from pypdf import PdfWriter, PdfReader
 
 from ..env import (
     get_api_key, get_allowed_url_pattern, get_blocked_url_pattern
 )
+
+
+def encrypt(in_file, password, out_stream):
+    pdf_reader = PdfReader(in_file)
+    pdf_writer = PdfWriter()
+    pdf_writer.append_pages_from_reader(pdf_reader)
+    pdf_writer.encrypt(password, password + "owner")
+    pdf_writer.write(out_stream)
 
 
 def authenticate(func):
