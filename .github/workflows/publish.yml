@@ -20,7 +20,7 @@ jobs:
         WEASYPRINT_VERSION=58.1
         IMAGE_ID=${{ secrets.DOCKERHUB_USERNAME }}/easy-pdf-rest
         tmpName="image-$RANDOM"
-        docker build --tag $tmpName .
+        docker build -f prod.Dockerfile --tag $tmpName .
         docker tag $tmpName $IMAGE_ID:$WEASYPRINT_VERSION
         docker tag $tmpName $IMAGE_ID:latest
         docker push $IMAGE_ID:$WEASYPRINT_VERSION
