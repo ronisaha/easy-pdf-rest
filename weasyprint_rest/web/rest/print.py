@@ -3,7 +3,9 @@
 
 import os
 import io
+import uuid
 
+from werkzeug.utils import secure_filename
 from werkzeug.datastructures import FileStorage
 from flask import request, abort, make_response
 from flask_restful import Resource
@@ -40,7 +42,7 @@ def _parse_request_argument(name, default=None, parse_type=None, parse_args=None
         file_name = _may_get_dict_value(parse_args, "file_name")
         return FileStorage(
             stream=io.BytesIO(bytes(content, encoding='utf8')),
-            filename=file_name,
+            filename="{0}-{1}".format(str(uuid.uuid1()), secure_filename(file_name)),
             content_type=content_type
         )
 
@@ -79,6 +81,7 @@ class PrintAPI(Resource):
         super(PrintAPI, self).__init__()
 
     def post(self):
+        password = _parse_request_argument("password", None)
         url = _parse_request_argument("url", None)
         html = None
         if url is None:
@@ -88,7 +91,7 @@ class PrintAPI(Resource):
             })
         else:
             html = FileStorage(
-                filename="document.html",
+                filename="{0}-document.html".format(str(uuid.uuid1())),
             )
         if html is None and url is None:
             return abort(422, description="Required argument 'html' or 'url' is missing.")
@@ -96,7 +99,7 @@ class PrintAPI(Resource):
         template = _build_template()
 
         printer = WeasyPrinter(html=html, url=url, template=template)
-        content = printer.write()
+        content = printer.write(password=password)
 
         # build response
         response = make_response(content)
@@ -111,6 +114,7 @@ class PrintAPI(Resource):
             "pdf"
         )
 
-        html.close()
+        if url is None:
+            html.close()
 
         return response
