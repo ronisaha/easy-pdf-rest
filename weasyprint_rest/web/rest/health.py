@@ -4,6 +4,7 @@
 import time
 from flask import request
 from flask_restful import Resource
+from weasyprint import __version__ as version
 
 
 class HealthAPI(Resource):
@@ -16,6 +17,7 @@ class HealthAPI(Resource):
 
         return {
             "status": "OK",
+            "weasyprint": version,
             "timestamp": round(time.time() * 1000),
             **({"pong": pong} if pong else {})
         }, 200

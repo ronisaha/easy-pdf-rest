@@ -22,7 +22,7 @@ def get_allowed_url_pattern():
 
 
 def get_max_upload_size():
-    return int(get("MAX_UPLOAD_SIZE", 16 * 1024 * 1024))
+    return int(get("MAX_UPLOAD_SIZE", 100 * 1024 * 1024))
 
 
 def get_secret_key():
@@ -30,7 +30,7 @@ def get_secret_key():
 
 
 def is_debug_mode():
-    return is_true(get("ENABLE_DEBUG_MODE"))
+    return is_true(get("FLASK_DEBUG"))
 
 
 def is_cors_enabled():
@@ -43,3 +43,7 @@ def get_cors_origins():
 
 def get_template_directory():
     return get("TEMPLATE_DIRECTORY", "/data/templates")
+
+
+def get_valid_file_ext():
+    return get("UPLOAD_EXTENSIONS", '.png,.jpg,.jpeg,.tiff,.bmp,.gif,.pdf').split(",")

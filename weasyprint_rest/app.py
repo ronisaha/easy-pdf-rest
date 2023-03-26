@@ -8,7 +8,7 @@ from .web.routes import register_routes
 from .print.template_loader import TemplateLoader
 from .env import (
     get_max_upload_size, get_template_directory, is_debug_mode,
-    get_secret_key, is_cors_enabled, get_cors_origins
+    get_secret_key, is_cors_enabled, get_cors_origins, get_valid_file_ext
 )
 
 _global = {
@@ -28,6 +28,7 @@ def create_app():
     local_app.config['DEBUG'] = is_debug_mode()
     local_app.config['MAIL_ENABLED'] = False
     local_app.config['SECRET_KEY'] = get_secret_key()
+    local_app.config['UPLOAD_EXTENSIONS'] = get_valid_file_ext()
 
     local_api = Api(local_app)
 
