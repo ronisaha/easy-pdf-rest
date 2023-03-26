@@ -5,8 +5,8 @@ pytest-env==0.8.1
 Flask==2.2.3
 Flask-RESTful==0.3.9
 Flask-CORS==3.0.10
-WeasyPrint==58.1
+WeasyPrint==52.5
 Werkzeug==2.2.3
 waitress==2.1.2
-pypdf==3.6.0
+pypdf==3.7.0
 Pillow==9.4.0
