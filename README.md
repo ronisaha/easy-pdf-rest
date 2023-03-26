@@ -1,7 +1,7 @@
 <div align="center">
 	<p>
 		<a href="https://github.com/ronisaha/easy-pdf-rest#is=awesome">
-			<img width="90%" src="https://raw.githubusercontent.com/ronisaha/easy-pdf-rest/develop/resources/logo_background.svg?sanitize=true"/>
+			<img width="90%" src="https://raw.githubusercontent.com/ronisaha/easy-pdf-rest/develop/resources/logo.svg?sanitize=true"/>
 		</a>
 	</p>
 	<hr>
@@ -152,6 +152,24 @@ POST /api/v1.0/merge
 ```code
 file1.pdf~0:2 a.jpeg file1.pdf~2:3 file2.pdf
 ```
+
+#### Range Syntext
+
+| Range | Description                 |     | Range | Description             |
+|-------|-----------------------------|-----|-------|-------------------------|
+| :     | all pages.                  |     | -1    | last page.              |
+| 22    | just the 23rd page.         |     | :-1   | all but the last page.  |
+| 0:3   | the first three pages.      |     | -2    | second-to-last page.    |
+| :3    | the first three pages.      |     | -2:   | last two pages.         |
+| 5:    | from the sixth page onward. |     | -3:-1 | third & second to last. |
+
+##### The third, "stride" or "step" number is also recognized.
+
+| Range  | Description                 |     | Range  | Description      |
+|--------|-----------------------------|-----|--------|------------------|
+| ::2    | 0 2 4 ... to the end.       |     | 3:0:-1 | 3 2 1 but not 0. |
+| 1:10:2 | 1 3 5 7 9                   |     | 2::-1  | 2 1 0.           |
+| ::-1   | all pages in reverse order. |     |        |                  |
 
 #### Response
 
