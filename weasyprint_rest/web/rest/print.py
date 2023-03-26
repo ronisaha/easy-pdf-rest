@@ -79,37 +79,36 @@ class PrintAPI(Resource):
         super(PrintAPI, self).__init__()
 
     def post(self):
-        mode = _parse_request_argument("mode", "pdf")
-        disposition = _parse_request_argument("disposition", "inline")
-        html = _parse_request_argument("html", None, "file", {
-            "content_type": "text/html",
-            "file_name": "document.html"
-        })
-
-        if html is None:
-            return abort(422, description="Required argument 'html' is missing.")
+        url = _parse_request_argument("url", None)
+        html = None
+        if url is None:
+            html = _parse_request_argument("html", None, "file", {
+                "content_type": "text/html",
+                "file_name": "document.html",
+            })
+        else:
+            html = FileStorage(
+                filename="document.html",
+            )
+        if html is None and url is None:
+            return abort(422, description="Required argument 'html' or 'url' is missing.")
 
         template = _build_template()
 
-        printer = WeasyPrinter(html, template=template)
-        content = printer.write(mode)
+        printer = WeasyPrinter(html=html, url=url, template=template)
+        content = printer.write()
 
         # build response
         response = make_response(content)
         basename, _ = os.path.splitext(html.filename)
-        extension = None
-        if mode == "pdf":
-            response.headers['Content-Type'] = 'application/pdf'
-            extension = "pdf"
-        else:
-            response.headers['Content-Type'] = 'image/png'
-            extension = "png"
+        response.headers['Content-Type'] = 'application/pdf'
+        disposition = _parse_request_argument("disposition", "inline")
 
         response.headers['Content-Disposition'] = '%s; name="%s"; filename="%s.%s"' % (
             disposition,
             basename,
             basename,
-            extension
+            "pdf"
         )
 
         html.close()

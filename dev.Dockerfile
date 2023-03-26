@@ -1,4 +1,4 @@
-FROM python:3-buster AS builder
+FROM python:3-bullseye AS builder
 RUN apt-get update && apt-get upgrade -y &&  apt-get dist-upgrade -y
 RUN apt-get install -y --no-install-recommends --yes python3-venv gcc libpython3-dev && \
     python3 -m venv /venv && \
@@ -24,7 +24,6 @@ RUN mkdir -p /data/templates
 
 ENV ENABLE_BUILD_IMAGE_UPDATE=${ENABLE_BUILD_IMAGE_UPDATE}
 ENV ENABLE_DEBUG_MODE=true
-ENV FLASK_ENV=development
 ENV ENABLE_RUNTIME_TEST_ONLY=false
 ENV PATH="/venv/bin:${PATH}"
 
