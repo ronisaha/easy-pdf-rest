@@ -28,17 +28,10 @@ def _parse_pages_input_string(input_string):
             file_name, ranges = file.split('~')
             ranges = ranges.split(',')
             for r in ranges:
-                if '-' in r:
-                    start, end = r.split('-')
-                    output_list.append({
-                        "file": file_name,
-                        "range": f"{start}:{end}"
-                    })
-                else:
-                    output_list.append({
-                        "file": file_name,
-                        "range": r
-                    })
+                output_list.append({
+                    "file": file_name,
+                    "range": r
+                })
         else:
             output_list.append({
                 "file": file
