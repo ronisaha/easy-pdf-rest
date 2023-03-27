@@ -14,7 +14,7 @@ class WeasyPrinter:
         self.url = url
         self.template = template if template is not None else Template()
 
-    def write(self, password=None, optimize_size=()):
+    def write(self, optimize_size, password=None):
         if self.url is not None:
             html = HTML(url=self.url, encoding="utf-8", url_fetcher=self.template.url_fetcher)
         else:
@@ -23,7 +23,8 @@ class WeasyPrinter:
         font_config = self.template.get_font_config()
         styles = self.template.get_styles() if self.template is not None else []
 
-        pdf_bytes = html.write_pdf(stylesheets=styles, image_cache=None, font_config=font_config)
+        pdf_bytes = html.write_pdf(stylesheets=styles, image_cache=None, font_config=font_config,
+                                   optimize_size=optimize_size)
         if password is None:
             return pdf_bytes
 

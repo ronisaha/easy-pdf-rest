@@ -17,7 +17,7 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     - name: Build and Push docker images
       run: |
-        WEASYPRINT_VERSION=52.5
+        WEASYPRINT_VERSION=57.2
         IMAGE_ID=${{ secrets.DOCKERHUB_USERNAME }}/easy-pdf-rest
         tmpName="image-$RANDOM"
         docker build -f prod.Dockerfile --tag $tmpName .

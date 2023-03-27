@@ -83,6 +83,11 @@ class PrintAPI(Resource):
     def post(self):
         password = _parse_request_argument("password", None)
         url = _parse_request_argument("url", None)
+        optimize = _parse_request_argument("optimize", None)
+        if optimize is not None:
+            optimize_size = tuple(optimize.split(","))
+        else:
+            optimize_size = ()
         html = None
         if url is None:
             html = _parse_request_argument("html", None, "file", {
@@ -99,7 +104,7 @@ class PrintAPI(Resource):
         template = _build_template()
 
         printer = WeasyPrinter(html=html, url=url, template=template)
-        content = printer.write(password=password)
+        content = printer.write(optimize_size, password=password)
 
         # build response
         response = make_response(content)
