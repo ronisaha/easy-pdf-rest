@@ -52,7 +52,7 @@ All configurations are set via environment variables.
 | `BLOCKED_URL_PATTERN` | `"^.*$"`                               | Pattern to block certain URLs. These URLs are later not allowed within resources of the print service. These resources will be ignored.                                                               |
 | `ALLOWED_URL_PATTERN` | `"^$"`                                 | Pattern to allow certain URLs. These URLs are later allowed within resources of the print service.                                                                                                    |
 | `MAX_UPLOAD_SIZE`     | `104857600`                            | Maximum size of the upload. Default is `100MB`                                                                                                                                                        |
-| `UPLOAD_EXTENSIONS`   | `.png,.jpg,.jpeg,.tiff,.bmp,.gif,.pdf` | Allowed extentions while using merge endpoint                                                                                                                                                         |
+| `UPLOAD_EXTENSIONS`   | `.png,.jpg,.jpeg,.tiff,.bmp,.gif,.pdf` | Allowed extensions while using merge endpoint                                                                                                                                                         |
 
 ## Services
 
