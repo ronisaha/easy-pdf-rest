@@ -75,12 +75,15 @@ GET /api/v1.0/health
 ```json
 {
   "status"    : "OK",
-  "timestamp" : number,
-  "pong"      : string?
+  "weasyprint": "string",
+  "timestamp" : "number",
+  "pong"      : "string?"
 }
 ```
 
 The `status` does always contain "OK".
+
+The `weasyprint` does contain the current weasyprint version.
 
 The `timestamp` does contain the current timestamp of the server in milliseconds.
 
@@ -96,16 +99,20 @@ POST /api/v1.0/print
 
 #### Parameters
 
-| Parameter  | Type             | Required          | Description                                                                                                                                                                                                               |
-|:-----------|:-----------------|:------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `html`     | `file or string` | __Semi-Required__ | HTML file to convert. html or url one is required. Only either url or html should be used.                                                                                                                                |
-| `url`      | `file or string` | __Semi-Required__ | URL to convert. html or url one is required. Only either url or html should be used.                                                                                                                                      |
-| `optimize` | `string`         | __Optional__      | Optimize size of generated PDF. Can contain Coma seperated "images" and "fonts".                                                                                                                                          |
-| `password` | `string`         | __Optional__      | Password protected PDF                                                                                                                                                                                                    |
-| `template` | `string`         | __Optional__      | Template name for the use of predefined templates.                                                                                                                                                                        |
-| `style`    | `file or string` | __Optional__      | Style to apply to the `html`. This should only be used if the CSS is not referenced in the html. If it is included via HTML link, it should be passed as `asset`. Only either `style` or `style[]` can be used.           |
-| `style[]`  | `file or file[]` | __Optional__      | Multiple styles to apply to the `html`. This should only be used if the CSS is not referenced in the html. If it is included via HTML link, it should be passed as `asset`. Only either `style` or `style[]` can be used. |
-| `asset[]`  | `file or file[]` | __Optional__      | Assets which are referenced in the html. This can be images, CSS or fonts. The name must be 1:1 the same as used in the files.                                                                                            |
+| Parameter     | Type             | Required          | Description                                                                                                                                                                                                               |
+|:--------------|:-----------------|:------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `html`        | `file or string` | __Semi-Required__ | HTML file to convert. html or url or report one is required. Only either url or html, report should be used.                                                                                                              |
+| `url`         | `file or string` | __Semi-Required__ | URL to convert. html or url or report one is required. Only either url or html, report should be used.                                                                                                                    |
+| `report`      | `string`         | __Semi-Required__ | Report template name to render the html. html or url or report one is required. Only either url or html, report should be used.                                                                                           |
+| `data`        | `dict`           | __Semi-Required__ | Variables as dictionary for rendering report template. Used along with `report` parameter.                                                                                                                                |
+| `optimize`    | `string`         | __Optional__      | Optimize size of generated PDF. Can contain Coma seperated "images" and "fonts".                                                                                                                                          |
+| `disposition` | `string`         | __Optional__      | Set response `disposition` type(attachment or inline). default is inline.                                                                                                                                                 |
+| `file_name`   | `string`         | __Optional__      | Set response `disposition file_name`. default is `document.pdf`.                                                                                                                                                          |
+| `password`    | `string`         | __Optional__      | Password protected PDF                                                                                                                                                                                                    |
+| `template`    | `string`         | __Optional__      | Template name for the use of predefined templates.                                                                                                                                                                        |
+| `style`       | `file or string` | __Optional__      | Style to apply to the `html`. This should only be used if the CSS is not referenced in the html. If it is included via HTML link, it should be passed as `asset`. Only either `style` or `style[]` can be used.           |
+| `style[]`     | `file or file[]` | __Optional__      | Multiple styles to apply to the `html`. This should only be used if the CSS is not referenced in the html. If it is included via HTML link, it should be passed as `asset`. Only either `style` or `style[]` can be used. |
+| `asset[]`     | `file or file[]` | __Optional__      | Assets which are referenced in the html. This can be images, CSS or fonts. The name must be 1:1 the same as used in the files.                                                                                            |
 
 
 #### Response
@@ -123,11 +130,13 @@ POST /api/v1.0/merge
 
 #### Parameters
 
-| Parameter  | Type            | Required     | Description                          |
-|:-----------|:----------------|:-------------|:-------------------------------------|
-| `files[]`  | `file or files` | __Required__ | PDF or Image file                    |
-| `pages`    | `string`        | __Required__ | Pages definition as string or `JSON` |
-| `password` | `string`        | __Optional__ | Password protected PDF               |
+| Parameter     | Type            | Required     | Description                                                               |
+|:--------------|:----------------|:-------------|:--------------------------------------------------------------------------|
+| `files[]`     | `file or files` | __Required__ | PDF or Image file                                                         |
+| `pages`       | `string`        | __Required__ | Pages definition as string or `JSON`                                      |
+| `disposition` | `string`        | __Optional__ | Set response `disposition` type(attachment or inline). default is inline. |
+| `file_name`   | `string`        | __Optional__ | Set response `disposition file_name`. default is `merged.pdf`.            |
+| `password`    | `string`        | __Optional__ | Password protected PDF                                                    |
 
 ##### pages can be passed as JSON
 

@@ -45,5 +45,9 @@ def get_template_directory():
     return get("TEMPLATE_DIRECTORY", "/data/templates")
 
 
+def get_report_directory():
+    return get("TEMPLATE_FOLDER", "/data/reports")
+
+
 def get_valid_file_ext():
     return get("UPLOAD_EXTENSIONS", '.png,.jpg,.jpeg,.tiff,.bmp,.gif,.pdf').split(",")

@@ -7,7 +7,7 @@ from flask_cors import CORS
 from .web.routes import register_routes
 from .print.template_loader import TemplateLoader
 from .env import (
-    get_max_upload_size, get_template_directory, is_debug_mode,
+    get_max_upload_size, get_template_directory, is_debug_mode, get_report_directory,
     get_secret_key, is_cors_enabled, get_cors_origins, get_valid_file_ext
 )
 
@@ -18,7 +18,7 @@ _global = {
 
 
 def create_app():
-    local_app = Flask(__name__)
+    local_app = Flask(__name__, template_folder=get_report_directory())
 
     if is_cors_enabled():
         CORS(local_app, resources={r"/api/*": {"origins": get_cors_origins()}})

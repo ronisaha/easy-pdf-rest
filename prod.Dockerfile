@@ -17,7 +17,7 @@ COPY weasyprint_rest /app/weasyprint_rest
 ENV PRODUCTION "true"
 ENV FLASK_DEBUG="false"
 
-RUN mkdir -p /data/templates
+RUN mkdir -p /data/templates && mkdir -p /data/reports
 
 WORKDIR /app
 ENTRYPOINT ["/venv/bin/waitress-serve", "--port=5000", "--host=0.0.0.0", "--call" ,"weasyprint_rest:app"]
