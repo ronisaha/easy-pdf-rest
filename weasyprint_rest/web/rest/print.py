@@ -1,13 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-
+import json
 import os
 import io
-import uuid
 
-from werkzeug.utils import secure_filename
 from werkzeug.datastructures import FileStorage
-from flask import request, abort, make_response
+from flask import request, abort, make_response, render_template
 from flask_restful import Resource
 
 from ..util import authenticate
@@ -39,10 +37,8 @@ def _parse_request_argument(name, default=None, parse_type=None, parse_args=None
 
     if parse_type == "file" and isinstance(content, str):
         content_type = _may_get_dict_value(parse_args, "content_type")
-        file_name = _may_get_dict_value(parse_args, "file_name")
         return FileStorage(
             stream=io.BytesIO(bytes(content, encoding='utf8')),
-            filename="{0}-{1}".format(str(uuid.uuid1()), secure_filename(file_name)),
             content_type=content_type
         )
 
@@ -81,29 +77,43 @@ class PrintAPI(Resource):
         super(PrintAPI, self).__init__()
 
     def post(self):
-        password = _parse_request_argument("password", None)
+
         url = _parse_request_argument("url", None)
+        report = _parse_request_argument("report", None)
+
         html = None
-        if url is None:
+
+        if report is not None:
+            try:
+                data = json.loads(_parse_request_argument("data", '{}'))
+                content = render_template(report, **data)
+                html = FileStorage(
+                    stream=io.BytesIO(bytes(content, encoding='utf8')),
+                    content_type="text/html"
+                )
+            except (ValueError, TypeError):
+                return abort(400, description="Invalid data provided")
+            except Exception as te:
+                return abort(400, description=te)
+
+        elif url is None:
             html = _parse_request_argument("html", None, "file", {
-                "content_type": "text/html",
-                "file_name": "document.html",
+                "content_type": "text/html"
             })
-        else:
-            html = FileStorage(
-                filename="{0}-document.html".format(str(uuid.uuid1())),
-            )
+
         if html is None and url is None:
-            return abort(422, description="Required argument 'html' or 'url' is missing.")
+            return abort(422, description="Required argument 'html' or 'url' or report is missing.")
 
         template = _build_template()
-
         printer = WeasyPrinter(html=html, url=url, template=template)
+
+        password = _parse_request_argument("password", None)
+
         content = printer.write(password=password)
 
         # build response
         response = make_response(content)
-        basename, _ = os.path.splitext(html.filename)
+        basename, _ = os.path.splitext(_parse_request_argument("file_name", 'document.pdf'))
         response.headers['Content-Type'] = 'application/pdf'
         disposition = _parse_request_argument("disposition", "inline")
 
@@ -114,7 +124,7 @@ class PrintAPI(Resource):
             "pdf"
         )
 
-        if url is None:
+        if hasattr(html, 'close'):
             html.close()
 
         return response

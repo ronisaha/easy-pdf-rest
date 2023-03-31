@@ -20,7 +20,7 @@ ARG ENABLE_BUILD_LINT=false
 RUN if [ "${ENABLE_BUILD_TEST}" != "false" ] && [ "${ENABLE_BUILD_IMAGE_UPDATE}" != "true" ]; then make test; else echo "Skip test"; fi
 RUN if [ "${ENABLE_BUILD_LINT}" != "false" ]; then make lint; else echo "Skip lint"; fi
 
-RUN mkdir -p /data/templates
+RUN mkdir -p /data/templates && mkdir -p /data/reports
 
 ENV ENABLE_BUILD_IMAGE_UPDATE=${ENABLE_BUILD_IMAGE_UPDATE}
 ENV ENABLE_DEBUG_MODE=true

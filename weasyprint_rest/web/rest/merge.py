@@ -65,10 +65,8 @@ def _parse_request_argument(name, default=None, parse_type=None, parse_args=None
 
     if parse_type == "file" and isinstance(content, str):
         content_type = _may_get_dict_value(parse_args, "content_type")
-        file_name = _may_get_dict_value(parse_args, "file_name")
         return FileStorage(
             stream=io.BytesIO(bytes(content, encoding='utf8')),
-            filename=file_name,
             content_type=content_type
         )
 
@@ -150,9 +148,18 @@ class MergeAPI(Resource):
             merger.write(in_file)
             encrypt(in_file, password, bytes_stream)
 
+        basename, _ = os.path.splitext(_parse_request_argument("file_name", 'merged.pdf'))
+
         response = make_response(bytes_stream.getvalue())
-        response.headers['Content-Disposition'] = 'attachment; filename=merged.pdf'
         response.mimetype = 'application/pdf'
+        disposition = _parse_request_argument("disposition", "inline")
+        response.headers['Content-Disposition'] = '%s; name="%s"; filename="%s.%s"' % (
+            disposition,
+            basename,
+            basename,
+            "pdf"
+        )
+
         merger.close()
         bytes_stream.close()
 
