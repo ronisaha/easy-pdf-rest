@@ -9,4 +9,5 @@ WeasyPrint==57.2
 Werkzeug==2.2.3
 waitress==2.1.2
 pypdf==3.7.0
-Pillow==9.4.0
+Pillow==9.5.0
+pdfkit==1.0.0
