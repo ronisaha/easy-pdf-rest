@@ -10,7 +10,18 @@ RUN /venv/bin/pip install --disable-pip-version-check -r /requirements.txt
 
 FROM python:slim-bullseye AS runner
 RUN apt-get update && \
-    apt-get install --no-install-suggests --no-install-recommends --yes gtk+3.0 curl jq
+    apt-get install --no-install-suggests --no-install-recommends --yes gtk+3.0 curl jq \
+            fontconfig \
+            xfonts-75dpi \
+            xfonts-base && \
+        cd /tmp && \
+        	curl -L -O https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.bullseye_amd64.deb && \
+          dpkg -i wkhtmltox_0.12.6.1-2.bullseye_amd64.deb && \
+        rm -rf wkhtmltox_0.12.6.1-2.bullseye_amd64.deb && \
+        apt-get remove -y g++ wget && \
+    	apt-get autoremove --purge -y && apt-get autoclean -y && apt-get clean -y && \
+      rm -rf /var/lib/apt/lists/* && \
+      rm -rf /tmp/* /var/tmp/*
 
 COPY --from=builder-venv /venv /venv
 COPY weasyprint_rest /app/weasyprint_rest

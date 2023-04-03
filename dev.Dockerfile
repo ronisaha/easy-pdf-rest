@@ -1,6 +1,16 @@
 FROM python:3-bullseye AS builder
 RUN apt-get update && apt-get upgrade -y &&  apt-get dist-upgrade -y
-RUN apt-get install -y --no-install-recommends --yes python3-venv gcc libpython3-dev && \
+RUN apt-get install -y --no-install-recommends --yes  \
+                    python3-venv  \
+                    gcc  \
+                    libpython3-dev  \
+                    fontconfig \
+                     xfonts-75dpi \
+                     xfonts-base && \
+    cd /tmp && \
+            	curl -L -O https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.bullseye_amd64.deb && \
+              dpkg -i wkhtmltox_0.12.6.1-2.bullseye_amd64.deb && \
+            rm -rf wkhtmltox_0.12.6.1-2.bullseye_amd64.deb && \
     python3 -m venv /venv && \
     /venv/bin/pip install --upgrade pip
 

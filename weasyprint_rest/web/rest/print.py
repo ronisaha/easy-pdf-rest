@@ -1,17 +1,17 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+import io
 import json
 import os
-import io
 
-from werkzeug.datastructures import FileStorage
 from flask import request, abort, make_response, render_template
 from flask_restful import Resource
+from werkzeug.datastructures import FileStorage
 
 from ..util import authenticate
-from ...print.weasyprinter import WeasyPrinter
-from ...print.template_loader import TemplateLoader
 from ...print.template import Template
+from ...print.template_loader import TemplateLoader
+from ...print.weasyprinter import WeasyPrinter
 
 
 def _get_request_list_or_value(request_dict, name):
@@ -78,8 +78,12 @@ class PrintAPI(Resource):
 
     def post(self):
 
+        driver = _parse_request_argument("driver", 'weasy')
         url = _parse_request_argument("url", None)
         report = _parse_request_argument("report", None)
+
+        if driver not in['weasy', 'wk']:
+            return abort(422, description="Invalid value for driver! only wk or weasy supported")
 
         html = None
 
@@ -109,7 +113,11 @@ class PrintAPI(Resource):
 
         password = _parse_request_argument("password", None)
 
-        content = printer.write(password=password)
+        options = None
+        if driver == 'wk':
+            options = json.loads(_parse_request_argument("options", '{}'))
+
+        content = printer.write(password=password, driver=driver, options=options)
 
         # build response
         response = make_response(content)

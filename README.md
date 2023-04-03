@@ -15,7 +15,7 @@
 First, you can start the container using the following command:
 
 ```bash
-docker run -p 5000:5000 -v /path/to/local/templates:/data/templates -d ronisaha/easy-pdf-rest:latest
+docker run -p 5000:5000 -v /path/to/local/data:/data -d ronisaha/easy-pdf-rest:52.5
 ```
 
 Then you can use the following command to generate the report.pdf from the official WeasyPrint sample. You can find the files in `tests/resources/report`.
@@ -109,6 +109,8 @@ POST /api/v1.0/print
 | `file_name`   | `string`         | __Optional__      | Set response `disposition file_name`. default is `document.pdf`.                                                                                                                                                          |
 | `password`    | `string`         | __Optional__      | Password protected PDF                                                                                                                                                                                                    |
 | `template`    | `string`         | __Optional__      | Template name for the use of predefined templates.                                                                                                                                                                        |
+| `driver`      | `string`         | __Optional__      | `wk\|weasy(default)` wk=`wkhtnltopdf` weasy=`Weasypring`                                                                                                                                                                  |
+| `options`     | `json`           | __Optional__      | Only with driver=`wk` all supported `wkhtmltopdf` options are supported                                                                                                                                                   |
 | `style`       | `file or string` | __Optional__      | Style to apply to the `html`. This should only be used if the CSS is not referenced in the html. If it is included via HTML link, it should be passed as `asset`. Only either `style` or `style[]` can be used.           |
 | `style[]`     | `file or file[]` | __Optional__      | Multiple styles to apply to the `html`. This should only be used if the CSS is not referenced in the html. If it is included via HTML link, it should be passed as `asset`. Only either `style` or `style[]` can be used. |
 | `asset[]`     | `file or file[]` | __Optional__      | Assets which are referenced in the html. This can be images, CSS or fonts. The name must be 1:1 the same as used in the files.                                                                                            |

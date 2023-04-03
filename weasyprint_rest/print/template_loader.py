@@ -83,7 +83,7 @@ class TemplateLoader:
             styles = self._read_files(base_dir, definition["styles"])
             assets = self._read_files(base_dir, definition["assets"])
 
-            template = Template(styles=styles, assets=assets)
+            template = Template(styles=styles, assets=assets, name=definition['name'])
             definition["template"] = template
 
         def _read_files(self, base_dir, file_locations):

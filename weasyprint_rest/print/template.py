@@ -1,6 +1,6 @@
-import re
-import os
 import mimetypes
+import os
+import re
 
 from weasyprint import CSS, default_url_fetcher
 from weasyprint.fonts import FontConfiguration
@@ -13,9 +13,10 @@ BASE64_DATA_RE = re.compile('^data:[^;]+;base64,')
 
 
 class Template:
-    def __init__(self, styles=None, assets=None, base_template=None):
+    def __init__(self, styles=None, assets=None, base_template=None, name=None):
         self.base_template = base_template
         self.font_config = FontConfiguration()
+        self.name = name
 
         if assets is not None:
             self.assets = {item.filename: item for item in assets}
