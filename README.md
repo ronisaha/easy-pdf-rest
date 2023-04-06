@@ -6,7 +6,7 @@
 	</p>
 	<hr>
 	<p>
-		Service and docker image for <a href="https://weasyprint.org/">WeasyPrint - the awesome document factory</a>
+		Rest Service and docker image for pdf processing.
 	</p>
 </div>
 
@@ -74,10 +74,14 @@ GET /api/v1.0/health
 
 ```json
 {
-  "status"    : "OK",
+  "status": "OK",
   "weasyprint": "string",
-  "timestamp" : "number",
-  "pong"      : "string?"
+  "wkhtmltopdf": "string",
+  "pypdf": "string",
+  "Pillow": "string",
+  "pdfkit": "string",
+  "timestamp": "number",
+  "pong": "string?"
 }
 ```
 
@@ -109,7 +113,7 @@ POST /api/v1.0/print
 | `file_name`   | `string`         | __Optional__      | Set response `disposition file_name`. default is `document.pdf`.                                                                                                                                                          |
 | `password`    | `string`         | __Optional__      | Password protected PDF                                                                                                                                                                                                    |
 | `template`    | `string`         | __Optional__      | Template name for the use of predefined templates.                                                                                                                                                                        |
-| `driver`      | `string`         | __Optional__      | `wk\|weasy(default)` wk=`wkhtnltopdf` weasy=`Weasypring`                                                                                                                                                                  |
+| `driver`      | `string`         | __Optional__      | `wk\|weasy(default)` wk=`wkhtnltopdf` weasy=`Weasyprint`                                                                                                                                                                  |
 | `options`     | `json`           | __Optional__      | Only with driver=`wk` all supported `wkhtmltopdf` options are supported                                                                                                                                                   |
 | `style`       | `file or string` | __Optional__      | Style to apply to the `html`. This should only be used if the CSS is not referenced in the html. If it is included via HTML link, it should be passed as `asset`. Only either `style` or `style[]` can be used.           |
 | `style[]`     | `file or file[]` | __Optional__      | Multiple styles to apply to the `html`. This should only be used if the CSS is not referenced in the html. If it is included via HTML link, it should be passed as `asset`. Only either `style` or `style[]` can be used. |
@@ -186,3 +190,13 @@ file1.pdf~0:2 a.jpeg file1.pdf~2:3 file2.pdf
 
 Raw output stream of with `Content-Type` of `application/pdf` also the header `Content-Disposition = 'inline;filename=merged.pdf` will be set.
 
+
+## Library and tools insides
+
+It usages following tools and libraries
+
+1. [WeasyPrint - the awesome document factory](https://weasyprint.org/)
+2. [WK&lt;html&gt;toPDF - command line tools to render HTML into PDF](https://wkhtmltopdf.org/)
+3. [pypdf - pure-python PDF library](https://pypi.org/project/pypdf/) capable of splitting, [merging](https://pypdf.readthedocs.io/en/stable/user/merging-pdfs.html), [cropping, and transforming](https://pypdf.readthedocs.io/en/stable/user/cropping-and-transforming.html)
+4. [Pillow - the Python Imaging Library](https://pypi.org/project/Pillow/)
+5. [pdfkit - wrapper for wkhtmltopdf](https://pypi.org/project/pdfkit/)
