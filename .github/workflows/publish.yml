@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   push:
-    if: github.event_name == 'push' && (contains(github.ref, 'refs/tags/') || contains(github.ref, 'refs/heads/develop'))
+    if: github.event_name == 'push' && (contains(github.ref, 'refs/tags/') || contains(github.ref, 'refs/heads/main'))
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
