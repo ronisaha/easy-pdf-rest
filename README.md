@@ -191,6 +191,9 @@ file1.pdf~0:2 a.jpeg file1.pdf~2:3 file2.pdf
 
 Raw output stream of with `Content-Type` of `application/pdf` also the header `Content-Disposition = 'inline;filename=merged.pdf` will be set.
 
+Attribution
+-----------
+This library was a forked from [weasyprint-rest](https://github.com/xpublisher/weasyprint-rest).
 
 ## Library and tools insides
 
