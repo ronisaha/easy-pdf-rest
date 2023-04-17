@@ -22,6 +22,11 @@ def get_temp_dir(template, assets_count):
     return "{0}{1}/".format(TMP_TEMPLATE_BASE, secure_filename(template.name))
 
 
+def _fix_file_option(options, base_dir, option_name):
+    if option_name in options and os.path.isfile(base_dir + options[option_name]):
+        options[option_name] = base_dir + options[option_name]
+
+
 class WeasyPrinter:
 
     def __init__(self, html=None, url=None, template=None):
@@ -59,6 +64,10 @@ class WeasyPrinter:
             html_file = base_dir + str(uuid.uuid1()) + ".html"
             self.html.save(html_file)
             options['enable-local-file-access'] = None
+
+            _fix_file_option(options, base_dir, 'footer-html')
+            _fix_file_option(options, base_dir, 'header-html')
+
             pdf_bytes = pdfkit.from_file(html_file, options=options, verbose=verbose)
             self._cleanup_dir(base_dir, html_file)
         return pdf_bytes
