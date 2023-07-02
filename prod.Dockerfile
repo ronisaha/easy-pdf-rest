@@ -2,11 +2,11 @@ FROM python:slim-bullseye AS builder
 RUN apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends --yes python3-venv gcc libpython3-dev gtk+3.0 && \
     python3 -m venv /venv && \
-    /venv/bin/pip install --upgrade pip
+    /venv/bin/pip install --upgrade pip --no-cache-dir
 
 FROM builder AS builder-venv
 COPY requirements.txt /requirements.txt
-RUN /venv/bin/pip install --disable-pip-version-check -r /requirements.txt
+RUN /venv/bin/pip install --disable-pip-version-check --no-cache-dir -r /requirements.txt
 
 FROM python:slim-bullseye AS runner
 RUN apt-get update && \
