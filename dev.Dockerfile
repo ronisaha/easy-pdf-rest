@@ -12,10 +12,10 @@ RUN apt-get install -y --no-install-recommends --yes  \
               dpkg -i wkhtmltox_0.12.6.1-2.bullseye_amd64.deb && \
             rm -rf wkhtmltox_0.12.6.1-2.bullseye_amd64.deb && \
     python3 -m venv /venv && \
-    /venv/bin/pip install --upgrade pip
+    /venv/bin/pip install --upgrade pip --no-cache-dir
 
 COPY requirements.txt /requirements.txt
-RUN /venv/bin/pip install -r /requirements.txt
+RUN /venv/bin/pip install --no-cache-dir -r /requirements.txt
 
 RUN /venv/bin/pip install pylint flake8 bandit
 ENV PATH="/venv/bin:${PATH}"
