@@ -59,7 +59,7 @@ class Template:
             return self._resolve_file(url.split('?')[0])
 
         if not check_url_access(url) and not BASE64_DATA_RE.match(url):
-            raise PermissionError('Requested URL %r was blocked because of restircion definitions.' % url)
+            raise PermissionError('Requested URL %r was blocked because of restriction definitions.' % url)
 
         fetch_result = default_url_fetcher(url)
         if fetch_result["mime_type"] == "text/plain":

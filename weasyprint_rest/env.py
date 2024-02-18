@@ -30,7 +30,7 @@ def get_secret_key():
 
 
 def is_debug_mode():
-    return is_true(get("FLASK_DEBUG"))
+    return is_true(get("ENABLE_DEBUG_MODE"))
 
 
 def is_cors_enabled():

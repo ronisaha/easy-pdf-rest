@@ -1,4 +1,4 @@
-FROM python:slim-bullseye AS builder
+FROM python:3.12-slim-bullseye AS builder
 RUN apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends --yes python3-venv gcc libpython3-dev gtk+3.0 && \
     python3 -m venv /venv && \
@@ -31,7 +31,7 @@ ENV FLASK_DEBUG="false"
 RUN mkdir -p /data/templates && mkdir -p /data/reports
 
 WORKDIR /app
-ENTRYPOINT ["/venv/bin/waitress-serve", "--port=5000", "--host=0.0.0.0", "--call" ,"weasyprint_rest:app"]
+ENTRYPOINT ["/venv/bin/waitress-serve", "--listen=*:5000", "--call" ,"weasyprint_rest:app"]
 
 HEALTHCHECK --start-period=5s --interval=10s --timeout=10s --retries=5 \
     CMD curl --silent --fail --request GET http://localhost:5000/api/v1.0/health \
