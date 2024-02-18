@@ -81,7 +81,7 @@ class PrintAPI(Resource):
         driver = _parse_request_argument("driver", 'weasy')
         url = _parse_request_argument("url", None)
         report = _parse_request_argument("report", None)
-        optimize = _parse_request_argument("optimize", None)
+        optimize_images = _parse_request_argument("optimize_images", False)
 
         if driver not in['weasy', 'wk']:
             return abort(422, description="Invalid value for driver! only wk or weasy supported")
@@ -114,16 +114,11 @@ class PrintAPI(Resource):
 
         password = _parse_request_argument("password", None)
 
-        if optimize is not None:
-            optimize_size = tuple(optimize.split(","))
-        else:
-            optimize_size = ()
-
         options = None
         if driver == 'wk':
             options = json.loads(_parse_request_argument("options", '{}'))
 
-        content = printer.write(optimize_size, password=password, driver=driver, options=options)
+        content = printer.write(optimize_images, password=password, driver=driver, options=options)
 
         # build response
         response = make_response(content)

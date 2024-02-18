@@ -34,12 +34,12 @@ class WeasyPrinter:
         self.url = url
         self.template = template if template is not None else Template()
 
-    def write(self, optimize_size, password=None, driver=None, options=None):
+    def write(self, optimize_images=False, password=None, driver=None, options=None):
 
         if driver == 'wk':
             pdf_bytes = self._write_with_pdfkit(options)
         else:
-            pdf_bytes = self._write_with_weasyprint(optimize_size)
+            pdf_bytes = self._write_with_weasyprint(optimize_images)
 
         if password is None:
             return pdf_bytes
@@ -96,7 +96,7 @@ class WeasyPrinter:
 
         return base_dir
 
-    def _write_with_weasyprint(self, optimize_size):
+    def _write_with_weasyprint(self, optimize_images):
         if self.url is not None:
             html = HTML(url=self.url, encoding="utf-8", url_fetcher=self.template.url_fetcher)
         else:
@@ -105,7 +105,7 @@ class WeasyPrinter:
         font_config = self.template.get_font_config()
         styles = self.template.get_styles() if self.template is not None else []
         pdf_bytes = html.write_pdf(stylesheets=styles, image_cache=None, font_config=font_config,
-                                   optimize_images=True)
+                                   optimize_images=optimize_images)
         return pdf_bytes
 
     def _cleanup_dir(self, base_dir, html_file):
