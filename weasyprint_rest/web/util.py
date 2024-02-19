@@ -28,10 +28,7 @@ def authenticate(func):
     @wraps(func)
     def verify_token(*args, **kwargs):
         try:
-            authenticated = (
-                get_api_key() is None
-                or ('X_API_KEY' in request.headers and get_api_key() == request.headers['X_API_KEY'])
-            )
+            authenticated = is_authenticated(request)
         except Exception:  # pragma: no cover
             return abort(401)
 
@@ -41,6 +38,13 @@ def authenticate(func):
             abort(401)
 
     return verify_token
+
+
+def is_authenticated(req):
+    return (
+        get_api_key() is None
+        or ('X_API_KEY' in req.headers and get_api_key() == req.headers['X_API_KEY'])
+    )
 
 
 def check_url_access(url):

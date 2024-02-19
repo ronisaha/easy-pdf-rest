@@ -9,6 +9,8 @@ from pypdf import __version__ as version_pypdf
 from PIL import __version__ as version_pil
 from pdfkit import __version__ as version_pdfkit
 
+from weasyprint_rest.web.util import is_authenticated
+
 
 class HealthAPI(Resource):
 
@@ -20,11 +22,13 @@ class HealthAPI(Resource):
 
         return {
             "status": "OK",
-            "weasyprint": version,
-            "wkhtmltopdf": "0.12.6 (with patched qt)",
-            "pypdf": version_pypdf,
-            "Pillow": version_pil,
-            "pdfkit": version_pdfkit,
-            "timestamp": round(time.time() * 1000),
+            **({
+                   "weasyprint": version,
+                   "wkhtmltopdf": "0.12.6 (with patched qt)",
+                   "pypdf": version_pypdf,
+                   "Pillow": version_pil,
+                   "pdfkit": version_pdfkit,
+                   "timestamp": round(time.time() * 1000)
+               } if is_authenticated(request) else {}),
             **({"pong": pong} if pong else {})
         }, 200
