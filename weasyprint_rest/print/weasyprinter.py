@@ -27,6 +27,12 @@ def _fix_file_option(options, base_dir, option_name):
         options[option_name] = base_dir + options[option_name]
 
 
+def create_directory_if_not_present(file_path):
+    directory = os.path.dirname(file_path)
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+
 class WeasyPrinter:
 
     def __init__(self, html=None, url=None, template=None):
@@ -88,10 +94,12 @@ class WeasyPrinter:
 
         if self.template.base_template is not None:
             for asset in self.template.base_template.assets:
+                create_directory_if_not_present(base_dir + asset)
                 self.template.get_asset(asset).save(base_dir + asset)
 
         for asset in self.template.assets:
             if not os.path.exists(base_dir + asset):
+                create_directory_if_not_present(base_dir + asset)
                 self.template.get_asset(asset).save(base_dir + asset)
 
         return base_dir
