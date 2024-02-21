@@ -46,7 +46,7 @@ def get_template_directory():
 
 
 def get_report_directory():
-    return get("TEMPLATE_FOLDER", "/data/reports")
+    return get("REPORT_DIRECTORY", "/data/reports")
 
 
 def get_valid_file_ext():
