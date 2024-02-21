@@ -53,6 +53,8 @@ All configurations are set via environment variables.
 | `ALLOWED_URL_PATTERN` | `"^$"`                                 | Pattern to allow certain URLs. These URLs are later allowed within resources of the print service.                                                                                                    |
 | `MAX_UPLOAD_SIZE`     | `104857600`                            | Maximum size of the upload. Default is `100MB`                                                                                                                                                        |
 | `UPLOAD_EXTENSIONS`   | `.png,.jpg,.jpeg,.tiff,.bmp,.gif,.pdf` | Allowed extensions while using merge endpoint                                                                                                                                                         |
+| `TEMPLATE_DIRECTORY`  | `/data/templates`                      | Base path for templates                                                                                                                                                                               |
+| `REPORT_DIRECTORY`    | `/data/reports`                        | Base path for Jinja template                                                                                                                                                                          |
 
 ## Services
 
