@@ -85,7 +85,8 @@ class Template:
         return {
             'mime_type': mimetype,
             'file_obj': NonClosable(file),
-            'filename': file_path
+            'filename': file_path,
+            'redirected_url': file.name
         }
 
     def __str__(self):
