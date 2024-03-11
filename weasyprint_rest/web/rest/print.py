@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import io
 import json
+import logging
 import os
 
 from flask import request, abort, make_response, render_template
@@ -96,10 +97,12 @@ class PrintAPI(Resource):
                     stream=io.BytesIO(bytes(content, encoding='utf8')),
                     content_type="text/html"
                 )
-            except (ValueError, TypeError):
+            except (ValueError, TypeError) as te:
+                logging.error(te)
                 return abort(400, description="Invalid data provided")
             except Exception as te:
-                return abort(400, description=te)
+                logging.error(te)
+                return abort(400, description="Unknown error occurred")
 
         elif url is None:
             html = _parse_request_argument("html", None, "file", {
