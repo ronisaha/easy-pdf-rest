@@ -7,17 +7,17 @@ import os
 
 from flask import request, abort, make_response, render_template
 from flask_restful import Resource
+from pypdf import PdfMerger
 from werkzeug.datastructures import FileStorage
 
 from ..util import authenticate
 from ...print.template import Template
 from ...print.template_loader import TemplateLoader
-from ...print.weasyprinter import WeasyPrinter
+from ...print.weasyprinter import WeasyPrinter, encrypt_pdf
 
 
 def _get_request_list_or_value(request_dict, name):
     return request_dict.getlist(name) if name.endswith("[]") else request_dict[name]
-
 
 def _get_request_argument(name, default=None):
     form = request.form
@@ -71,6 +71,35 @@ def _build_template():
     return Template(styles=styles, assets=assets, base_template=base_template)
 
 
+def convert_html2pdf(driver, html, optimize_images, template, url):
+    printer = WeasyPrinter(html=html, url=url, template=template)
+    options = None
+    if driver == 'wk':
+        options = json.loads(_parse_request_argument("options", '{}'))
+    pdf_bytes = printer.write(optimize_images, driver=driver, options=options)
+    return pdf_bytes
+
+
+def render_report_template(report, **data):
+    content = render_template(report, **data)
+    return FileStorage(
+        stream=io.BytesIO(bytes(content, encoding='utf8')),
+        content_type="text/html"
+    )
+
+
+def get_multi_report_pdf(driver, optimize_images, report, template, data_arr):
+    merger = PdfMerger()
+    for data in data_arr:
+        h = render_report_template(report, **data)
+        pdf_bytes = convert_html2pdf(driver, h, optimize_images, template, None)
+        merger.append(io.BytesIO(pdf_bytes))
+    bytes_stream = io.BytesIO()
+    merger.write(bytes_stream)
+
+    return bytes_stream.getvalue()
+
+
 class PrintAPI(Resource):
     decorators = [authenticate]
 
@@ -83,20 +112,33 @@ class PrintAPI(Resource):
         url = _parse_request_argument("url", None)
         report = _parse_request_argument("report", None)
         optimize_images = _parse_request_argument("optimize_images", False)
+        data_set = _parse_request_argument("data_set", None)
 
-        if driver not in['weasy', 'wk']:
+        if driver not in ['weasy', 'wk']:
             return abort(422, description="Invalid value for driver! only wk or weasy supported")
 
         html = None
+        pdf_bytes = None
+        template = _build_template()
 
-        if report is not None:
+        if report is not None and data_set is not None:
+
             try:
-                data = json.loads(_parse_request_argument("data", '{}'))
-                content = render_template(report, **data)
-                html = FileStorage(
-                    stream=io.BytesIO(bytes(content, encoding='utf8')),
-                    content_type="text/html"
-                )
+                data_arr = json.loads(_parse_request_argument("data_set", '[]'))
+            except (ValueError, TypeError) as te:
+                logging.error(te)
+                return abort(400, description="Invalid data provided")
+            except Exception as te:
+                logging.error(te)
+                return abort(400, description="Unknown error occurred")
+
+            if not isinstance(data_arr, list) or len(data_arr) == 0:
+                return abort(400, description="Unknown error occurred")
+
+            pdf_bytes = get_multi_report_pdf(driver, optimize_images, report, template, data_arr)
+        elif report is not None:
+            try:
+                html = render_report_template(report, **(json.loads(_parse_request_argument("data", '{}'))))
             except (ValueError, TypeError) as te:
                 logging.error(te)
                 return abort(400, description="Invalid data provided")
@@ -109,19 +151,15 @@ class PrintAPI(Resource):
                 "content_type": "text/html"
             })
 
-        if html is None and url is None:
+        if html is None and url is None and pdf_bytes is None:
             return abort(422, description="Required argument 'html' or 'url' or report is missing.")
 
-        template = _build_template()
-        printer = WeasyPrinter(html=html, url=url, template=template)
+        if pdf_bytes is None:
+            pdf_bytes = convert_html2pdf(driver, html, optimize_images, template, url)
 
         password = _parse_request_argument("password", None)
 
-        options = None
-        if driver == 'wk':
-            options = json.loads(_parse_request_argument("options", '{}'))
-
-        content = printer.write(optimize_images, password=password, driver=driver, options=options)
+        content = encrypt_pdf(pdf_bytes, password=password)
 
         # build response
         response = make_response(content)
