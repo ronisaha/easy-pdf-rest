@@ -33,6 +33,16 @@ def create_directory_if_not_present(file_path):
         os.makedirs(directory)
 
 
+def encrypt_pdf(pdf_bytes, password=None):
+    if password is None:
+        return pdf_bytes
+
+    out_file = io.BytesIO()
+    encrypt(io.BytesIO(pdf_bytes), password, out_file)
+
+    return out_file.getvalue()
+
+
 class WeasyPrinter:
 
     def __init__(self, html=None, url=None, template=None):
@@ -40,20 +50,12 @@ class WeasyPrinter:
         self.url = url
         self.template = template if template is not None else Template()
 
-    def write(self, password=None, driver=None, options=None):
+    def write(self, driver=None, options=None):
 
         if driver == 'wk':
-            pdf_bytes = self._write_with_pdfkit(options)
+            return self._write_with_pdfkit(options)
         else:
-            pdf_bytes = self._write_with_weasyprint()
-
-        if password is None:
-            return pdf_bytes
-
-        out_file = io.BytesIO()
-        encrypt(io.BytesIO(pdf_bytes), password, out_file)
-
-        return out_file.getvalue()
+            return self._write_with_weasyprint()
 
     def _write_with_pdfkit(self, options):
         verbose = None
