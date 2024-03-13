@@ -88,11 +88,11 @@ def render_report_template(report, **data):
     )
 
 
-def get_multi_report_pdf(driver, optimize_images, report, template, data_arr):
+def get_multi_report_pdf(driver, report, template, data_arr):
     merger = PdfMerger()
     for data in data_arr:
-        h = render_report_template(report, **data)
-        pdf_bytes = convert_html2pdf(driver, h, optimize_images, template, None)
+        html = render_report_template(report, **data)
+        pdf_bytes = convert_html2pdf(driver, html, template, None)
         merger.append(io.BytesIO(pdf_bytes))
     bytes_stream = io.BytesIO()
     merger.write(bytes_stream)
