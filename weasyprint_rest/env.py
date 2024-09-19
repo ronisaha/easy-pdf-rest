@@ -51,3 +51,9 @@ def get_report_directory():
 
 def get_valid_file_ext():
     return get("UPLOAD_EXTENSIONS", '.png,.jpg,.jpeg,.tiff,.bmp,.gif,.pdf').split(",")
+
+def get_qr_box_size():
+    return int(get("QR_BOX_SIZE", 10))
+
+def get_qr_border():
+    return int(get("QR_BORDER", 4))

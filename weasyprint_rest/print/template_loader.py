@@ -1,9 +1,13 @@
-import json
+import base64
 import glob
-import os
+import json
 import logging
 import mimetypes
+import os
+from io import BytesIO
 
+import qrcode
+from PIL import Image
 from werkzeug.datastructures import FileStorage
 
 from .template import Template
@@ -98,3 +102,40 @@ class TemplateLoader:
                     content_type=mimetypes.guess_type(file)[0]
                 ))
             return files
+
+    def generate_qrcode(data, logo_path=None):
+        try:
+            template_directory = os.getenv('TEMPLATE_DIRECTORY', '/data/templates')
+            box_size = int(os.getenv('QR_BOX_SIZE', 10))
+            border = int(os.getenv('QR_BORDER', 4))
+
+            if logo_path:
+                logo_path = os.path.join(template_directory, logo_path)
+            qr = qrcode.QRCode(
+                version=1,
+                error_correction=qrcode.constants.ERROR_CORRECT_H,
+                box_size=box_size,
+                border=border,
+            )
+            qr.add_data(data)
+            qr.make(fit=True)
+
+            img = qr.make_image(fill_color='black', back_color='white').convert('RGB')
+            if logo_path and os.path.exists(logo_path):
+                logo = Image.open(logo_path)
+                if logo.mode in ('P', 'LA') or (logo.mode == 'RGBA' and 'transparency' in logo.info):
+                    logo = logo.convert('RGBA')
+                logo_size = min(img.size[0] // 5, img.size[1] // 5)
+                logo = logo.resize((logo_size, logo_size), Image.LANCZOS)
+                mask = logo.split()[3] if logo.mode == 'RGBA' else None
+                pos = ((img.size[0] - logo_size) // 2, (img.size[1] - logo_size) // 2)
+                img.paste(logo, pos, mask=mask)
+
+            buffer = BytesIO()
+            img.save(buffer, format="PNG")
+            img_str = base64.b64encode(buffer.getvalue()).decode("utf-8")
+            return f"data:image/png;base64,{img_str}"
+
+        except Exception as e:
+            print(f"Error generating QR code: {e}")
+            return None

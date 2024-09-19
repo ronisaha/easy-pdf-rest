@@ -3,7 +3,6 @@ import logging
 from flask import Flask
 from flask_restful import Api
 from flask_cors import CORS
-
 from .web.routes import register_routes
 from .print.template_loader import TemplateLoader
 from .env import (
@@ -34,6 +33,8 @@ def create_app():
 
     register_routes(local_api)
     TemplateLoader().load(get_template_directory())
+
+    local_app.jinja_env.filters['QRCODE'] = TemplateLoader.generate_qrcode
 
     weasyprint_logger = logging.getLogger("weasyprint")
     if is_debug_mode():
