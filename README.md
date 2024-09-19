@@ -207,3 +207,44 @@ It usages following tools and libraries
 3. [pypdf - pure-python PDF library](https://pypi.org/project/pypdf/) capable of splitting, [merging](https://pypdf.readthedocs.io/en/stable/user/merging-pdfs.html), [cropping, and transforming](https://pypdf.readthedocs.io/en/stable/user/cropping-and-transforming.html)
 4. [Pillow - the Python Imaging Library](https://pypi.org/project/Pillow/)
 5. [pdfkit - wrapper for wkhtmltopdf](https://pypi.org/project/pdfkit/)
+
+
+## QR Code Functionality
+
+To use the QR code generation functionality in your templates, follow these steps:
+
+1. **Add the QR Code Filter**: Ensure that the `generate_qrcode` function is registered as a Jinja2 filter named `QRCODE` in your Flask application.
+
+2. **Use the Filter in Templates**: You can use the `QRCODE` filter in your HTML templates to generate QR codes. For example:
+
+    ```html
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>QR Code Example</title>
+    </head>
+    <body>
+        <h1>QR Code Example</h1>
+        <img src="{{ data|QRCODE('logo.png') }}" alt="QR Code">
+    </body>
+    </html>
+    ```
+
+3. **Parameters**: The `QRCODE` filter takes two parameters:
+    - `data`: The data to encode in the QR code.
+    - `logo_path` (optional): The path to a logo image to embed in the center of the QR code. The path should be relative to the template directory.
+
+4. **Template Directory**: Ensure that the `TEMPLATE_DIRECTORY` environment variable is set to the path of your template directory. The default is `/data/templates`.
+
+    ```bash
+    export TEMPLATE_DIRECTORY=/path/to/your/templates
+    ```
+
+5. **QR Code Size and Border**: You can set the size and border of the QR code using the following environment variables:
+
+    ```bash
+    export QR_BOX_SIZE=10  # Default is 10
+    export QR_BORDER=4     # Default is 4
+    ```

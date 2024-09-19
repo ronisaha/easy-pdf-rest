@@ -3,6 +3,10 @@ import os
 import hashlib
 import mimetypes
 from werkzeug.datastructures import FileStorage
+from weasyprint_rest.print.template_loader import TemplateLoader
+from PIL import Image
+import base64
+from io import BytesIO
 
 
 def test_app():
@@ -234,3 +238,54 @@ def get_path(relative_path):
 
 def auth_header():
     return {"X_API_KEY": "SECRET_API_KEY"}
+
+
+def test_generate_qrcode():
+    data = "This is a example Data"
+    logo_path = get_path("./resources/templates/logo.png")
+
+    # Generate QR code
+    qr_code_data = TemplateLoader.generate_qrcode(data, logo_path)
+
+    # Check if QR code data is generated
+    assert qr_code_data is not None
+
+    # Decode the base64 string to verify the image
+    qr_code_bytes = base64.b64decode(qr_code_data.split(",")[1])
+    qr_code_image = Image.open(BytesIO(qr_code_bytes))
+
+    # Check if the image is a valid QR code
+    assert qr_code_image.format == "PNG"
+    assert qr_code_image.size[0] > 0 and qr_code_image.size[1] > 0
+
+
+def get_path(relative_path):
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    return os.path.join(dir_path, relative_path)
+
+
+def test_html_template():
+    data = "This is a example Data"
+    logo_path = get_path("./resources/templates/logo.png")
+
+    # Generate QR code
+    qr_code_data = TemplateLoader.generate_qrcode(data, logo_path)
+
+    # Create HTML template with QR code
+    html_template = f"""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>QR Code Example</title>
+    </head>
+    <body>
+        <h1>QR Code Example</h1>
+        <img src="{qr_code_data}" alt="QR Code">
+    </body>
+    </html>
+    """
+
+    # Check if the HTML template contains the QR code data
+    assert qr_code_data in html_template
