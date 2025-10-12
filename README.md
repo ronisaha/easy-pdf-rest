@@ -194,6 +194,10 @@ file1.pdf~0:2 a.jpeg file1.pdf~2:3 file2.pdf
 
 Raw output stream of with `Content-Type` of `application/pdf` also the header `Content-Disposition = 'inline;filename=merged.pdf` will be set.
 
+#### Rich Editor Content Style with "editor-template"
+`editor-template` can be used as the template name in the template parameter to apply styles to rich editor content.
+Ensure that all related style files are located in the `TEMPLATE_DIRECTORY/editor-template` directory.
+
 Attribution
 -----------
 This library was a forked from [weasyprint-rest](https://github.com/xpublisher/weasyprint-rest).
